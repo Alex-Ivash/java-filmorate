@@ -5,42 +5,44 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/films")
+@RequestMapping("/users")
 @Slf4j
-public class FilmController {
-    private final Map<Integer, Film> films = new HashMap<>();
+public class UserController {
+    private final Map<Integer, User> users = new HashMap<>();
     private int seq = 0;
-    private final LocalDate releaseDateLowerBound = LocalDate.of(1895, 12, 28);
 
     @PostMapping
-    private Film createFilm(@RequestBody @Valid Film film) {
-        if (film.getReleaseDate().isBefore(releaseDateLowerBound)) {
+    private User createUser(@RequestBody @Valid User user) {
+        if (user.getLogin().contains(" ")) {
             ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Дата релиза — не раньше 28 декабря 1895 года"
+                    HttpStatus.BAD_REQUEST, "Логин не может содержать пробелы"
             );
 
             log.warn(responseStatusException.getMessage());
             throw responseStatusException;
         }
 
-        film.setId(++seq);
-        films.put(film.getId(), film);
-        log.info("Добавлен новый фильм: " + film);
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
 
-        return film;
+        user.setId(++seq);
+        users.put(user.getId(), user);
+        log.info("Добавлен новый пользователь: " + user);
+
+        return user;
     }
 
     @PutMapping
-    private Film updateFilm(@RequestBody @Valid Film film) {
-        if (film.getId() == null) {
+    private User updateUser(@RequestBody @Valid User user) {
+        if (user.getId() == null) {
             ResponseStatusException responseStatusException = new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Id должен быть указан"
             );
@@ -49,23 +51,23 @@ public class FilmController {
             throw responseStatusException;
         }
 
-        if (!films.containsKey(film.getId())) {
+        if (!users.containsKey(user.getId())) {
             ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Фильм с id = " + film.getId() + " не найден"
+                    HttpStatus.NOT_FOUND, "Пользователь с id = " + user.getId() + " не найден"
             );
 
             log.warn(responseStatusException.getMessage());
             throw responseStatusException;
         }
 
-        films.put(film.getId(), film);
-        log.info("Обновлен фильм: " + film);
+        users.put(user.getId(), user);
+        log.info("Обновлен пользователь: " + user);
 
-        return film;
+        return user;
     }
 
     @GetMapping
-    private Collection<Film> getFilms() {
-        return films.values();
+    private Collection<User> getUsers() {
+        return users.values();
     }
 }

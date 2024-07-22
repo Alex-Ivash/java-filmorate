@@ -8,10 +8,12 @@ import java.time.LocalDate;
 
 public class FilmReleaseDateValidator implements ConstraintValidator<NotBefore, LocalDate> {
     String value;
+
     @Override
     public void initialize(NotBefore constraintAnnotation) {
         this.value = constraintAnnotation.value();
     }
+
     @Override
     public boolean isValid(LocalDate date, ConstraintValidatorContext constraintValidatorContext) {
         if (date == null) {

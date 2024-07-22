@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.validation.annotation.NotBefore;
+import ru.yandex.practicum.filmorate.validation.annotation.group.RestValidationGroups;
 
 import java.time.LocalDate;
 
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class Film {
+    @NotNull(groups = RestValidationGroups.Update.class)
     private Integer id;
     @NotNull
     @NotBlank
@@ -23,6 +26,7 @@ public class Film {
     @Size(max = 200)
     private String description;
     @NotNull
+    @NotBefore
     private LocalDate releaseDate;
     @NotNull
     @Positive

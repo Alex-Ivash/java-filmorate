@@ -2,10 +2,11 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.validation.annotation.group.RestValidationGroups;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,47 +21,23 @@ public class UserController {
 
     @PostMapping
     private User createUser(@RequestBody @Valid User user) {
-        if (user.getLogin().contains(" ")) {
-            ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Логин не может содержать пробелы"
-            );
-
-            log.warn(responseStatusException.getMessage());
-            throw responseStatusException;
-        }
-
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
 
         user.setId(++seq);
         users.put(user.getId(), user);
+
         log.info("Добавлен новый пользователь: " + user);
 
         return user;
     }
 
     @PutMapping
-    private User updateUser(@RequestBody @Valid User user) {
-        if (user.getId() == null) {
-            ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Id должен быть указан"
-            );
-
-            log.warn(responseStatusException.getMessage());
-            throw responseStatusException;
-        }
-
-        if (!users.containsKey(user.getId())) {
-            ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Пользователь с id = " + user.getId() + " не найден"
-            );
-
-            log.warn(responseStatusException.getMessage());
-            throw responseStatusException;
-        }
-
+    private User updateUser(@RequestBody @Validated(RestValidationGroups.Update.class) User user) {
+        validateUserExisting(user);
         users.put(user.getId(), user);
+
         log.info("Обновлен пользователь: " + user);
 
         return user;
@@ -69,5 +46,15 @@ public class UserController {
     @GetMapping
     private Collection<User> getUsers() {
         return users.values();
+    }
+
+    private void validateUserExisting(User user) {
+        if (!users.containsKey(user.getId())) {
+            String message = "Пользователь с id=" + user.getId() + " не найден";
+
+            log.warn(message);
+
+            throw new NotFoundException(message);
+        }
     }
 }

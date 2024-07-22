@@ -2,10 +2,11 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.validation.annotation.group.RestValidationGroups;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -22,15 +23,6 @@ public class FilmController {
 
     @PostMapping
     private Film createFilm(@RequestBody @Valid Film film) {
-        if (film.getReleaseDate().isBefore(releaseDateLowerBound)) {
-            ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Дата релиза — не раньше 28 декабря 1895 года"
-            );
-
-            log.warn(responseStatusException.getMessage());
-            throw responseStatusException;
-        }
-
         film.setId(++seq);
         films.put(film.getId(), film);
         log.info("Добавлен новый фильм: " + film);
@@ -39,26 +31,10 @@ public class FilmController {
     }
 
     @PutMapping
-    private Film updateFilm(@RequestBody @Valid Film film) {
-        if (film.getId() == null) {
-            ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Id должен быть указан"
-            );
-
-            log.warn(responseStatusException.getMessage());
-            throw responseStatusException;
-        }
-
-        if (!films.containsKey(film.getId())) {
-            ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Фильм с id = " + film.getId() + " не найден"
-            );
-
-            log.warn(responseStatusException.getMessage());
-            throw responseStatusException;
-        }
-
+    private Film updateFilm(@RequestBody @Validated(RestValidationGroups.Update.class) Film film) {
+        validateFilmExisting(film);
         films.put(film.getId(), film);
+
         log.info("Обновлен фильм: " + film);
 
         return film;
@@ -67,5 +43,15 @@ public class FilmController {
     @GetMapping
     private Collection<Film> getFilms() {
         return films.values();
+    }
+
+    private void validateFilmExisting(Film film) {
+        if (!films.containsKey(film.getId())) {
+            String message = "Фильм с id=" + film.getId() + " не найден";
+
+            log.warn(message);
+
+            throw new NotFoundException(message);
+        }
     }
 }

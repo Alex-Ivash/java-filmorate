@@ -19,15 +19,19 @@ import java.time.LocalDate;
 public class User {
     @NotNull(groups = RestValidationGroups.Update.class)
     private Integer id;
+
     @NotNull
     @Email
     @NotBlank
     private String email;
+
     @NotNull
     @NotBlank
     @NoWhitespace
     private String login;
+
     private String name;
+
     @NotNull
     @Past
     private LocalDate birthday;

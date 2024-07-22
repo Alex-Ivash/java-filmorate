@@ -19,15 +19,19 @@ import java.time.LocalDate;
 public class Film {
     @NotNull(groups = RestValidationGroups.Update.class)
     private Integer id;
+
     @NotNull
     @NotBlank
     private String name;
+
     @NotNull
     @Size(max = 200)
     private String description;
+
     @NotNull
     @NotBefore
     private LocalDate releaseDate;
+
     @NotNull
     @Positive
     private Integer duration;

@@ -21,10 +21,7 @@ public class UserController {
 
     @PostMapping
     private User createUser(@RequestBody @Valid User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
+        user.setName(computeUserName(user));
         user.setId(++seq);
         users.put(user.getId(), user);
 
@@ -35,7 +32,8 @@ public class UserController {
 
     @PutMapping
     private User updateUser(@RequestBody @Validated(RestValidationGroups.Update.class) User user) {
-        validateUserExisting(user);
+        checkUserExistence(user);
+        user.setName(computeUserName(user));
         users.put(user.getId(), user);
 
         log.info("Обновлен пользователь: " + user);
@@ -48,7 +46,15 @@ public class UserController {
         return users.values();
     }
 
-    private void validateUserExisting(User user) {
+    private String computeUserName(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            return user.getLogin();
+        }
+
+        return user.getName();
+    }
+
+    private void checkUserExistence(User user) {
         if (!users.containsKey(user.getId())) {
             String message = "Пользователь с id=" + user.getId() + " не найден";
 

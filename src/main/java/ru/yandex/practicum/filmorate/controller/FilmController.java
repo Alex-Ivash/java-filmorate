@@ -25,6 +25,7 @@ public class FilmController {
     private Film createFilm(@RequestBody @Valid Film film) {
         film.setId(++seq);
         films.put(film.getId(), film);
+
         log.info("Добавлен новый фильм: " + film);
 
         return film;
@@ -32,7 +33,7 @@ public class FilmController {
 
     @PutMapping
     private Film updateFilm(@RequestBody @Validated(RestValidationGroups.Update.class) Film film) {
-        validateFilmExisting(film);
+        checkFilmExistence(film);
         films.put(film.getId(), film);
 
         log.info("Обновлен фильм: " + film);
@@ -45,7 +46,7 @@ public class FilmController {
         return films.values();
     }
 
-    private void validateFilmExisting(Film film) {
+    private void checkFilmExistence(Film film) {
         if (!films.containsKey(film.getId())) {
             String message = "Фильм с id=" + film.getId() + " не найден";
 

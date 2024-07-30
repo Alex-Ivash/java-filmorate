@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.validation.annotation.NoWhitespace;
 import ru.yandex.practicum.filmorate.validation.annotation.group.RestValidationGroups;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * User.
@@ -17,8 +19,10 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class User {
+    private final Set<Long> friends = new HashSet<>();
+
     @NotNull(groups = RestValidationGroups.Update.class)
-    private Integer id;
+    private Long id;
 
     @NotNull
     @Email

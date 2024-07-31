@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 
@@ -16,9 +15,9 @@ public interface FilmService {
 
     void remove(long id);
 
-    void addLike(Film film, User user);
+    void addLike(long filmId, long userId);
 
-    void removeLike(Film film, User user);
+    void removeLike(long filmId, long userId);
 
     List<Film> getPopular(int count);
 }

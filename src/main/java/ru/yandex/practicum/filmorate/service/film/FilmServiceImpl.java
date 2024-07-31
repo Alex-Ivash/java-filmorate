@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Comparator;
 import java.util.List;
@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
     @Override
     public Film create(Film film) {
@@ -22,8 +23,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film find(long id) {
-        return filmStorage.find(id)
-                .orElseThrow(() -> new NotFoundException("Фильм с id=" + id + " не найден"));
+        return filmStorage.find(id);
     }
 
     @Override
@@ -45,12 +45,18 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public void addLike(Film film, User user) {
+    public void addLike(long filmId, long userId) {
+        Film film = filmStorage.find(filmId);
+        User user = userStorage.find(userId);
+
         film.getLikes().add(user.getId());
     }
 
     @Override
-    public void removeLike(Film film, User user) {
+    public void removeLike(long filmId, long userId) {
+        Film film = filmStorage.find(filmId);
+        User user = userStorage.find(userId);
+
         film.getLikes().remove(user.getId());
     }
 

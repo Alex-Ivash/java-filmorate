@@ -8,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
-import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.validation.annotation.group.RestValidationGroups;
 
 import java.util.List;
@@ -21,7 +19,6 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
     private final FilmService filmService;
-    private final UserService userService;
 
     @GetMapping("/{id}")
     private Film get(@PathVariable long id) {
@@ -60,23 +57,19 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     private void addLike(@PathVariable long id, @PathVariable long userId) {
-        log.info("Попытка пользователя с id={} поставить лайк фильму c id={}", id, userId);
-        Film film = filmService.find(id);
-        User user = userService.find(userId);
+        log.info("Попытка пользователя с id={} поставить лайк фильму c id={}", userId, id);
 
-        filmService.addLike(film, user);
-        log.info("Пользователь {} поставил лайк фильму {}", user, film);
+        filmService.addLike(id, userId);
+        log.info("Пользователь c id={} поставил лайк фильму c id={}", userId, id);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void removeLike(@PathVariable long id, @PathVariable long userId) {
-        log.info("Попытка пользователя с id={} удалить свой лайк фильму c id={}", id, userId);
-        Film film = filmService.find(id);
-        User user = userService.find(userId);
+        log.info("Попытка пользователя с id={} удалить свой лайк фильму c id={}", userId, id);
 
-        filmService.removeLike(film, user);
-        log.info("Пользователь {} удалил свой лайк фильму {}", user, film);
+        filmService.removeLike(id, userId);
+        log.info("Пользователь id={} удалил свой лайк фильму id={}", userId, id);
     }
 
     @DeleteMapping("/{id}")

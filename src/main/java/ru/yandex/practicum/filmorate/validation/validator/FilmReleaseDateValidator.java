@@ -7,11 +7,11 @@ import ru.yandex.practicum.filmorate.validation.annotation.NotBefore;
 import java.time.LocalDate;
 
 public class FilmReleaseDateValidator implements ConstraintValidator<NotBefore, LocalDate> {
-    String value;
+    LocalDate releaseDateLowerBound;
 
     @Override
     public void initialize(NotBefore constraintAnnotation) {
-        this.value = constraintAnnotation.value();
+        this.releaseDateLowerBound = LocalDate.parse(constraintAnnotation.value());
     }
 
     @Override
@@ -20,8 +20,6 @@ public class FilmReleaseDateValidator implements ConstraintValidator<NotBefore, 
             return false;
         }
 
-        LocalDate boundDate = LocalDate.parse(value);
-
-        return date.isAfter(boundDate) || date.equals(boundDate);
+        return date.isAfter(releaseDateLowerBound) || date.equals(releaseDateLowerBound);
     }
 }

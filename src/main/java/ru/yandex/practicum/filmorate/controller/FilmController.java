@@ -51,7 +51,6 @@ public class FilmController {
     @PutMapping
     private Film update(@RequestBody @Validated({RestValidationGroups.Update.class, Default.class}) Film film) {
         log.info("Попытка обновить фильм {}", film);
-        filmService.find(film.getId());
 
         Film updatedFilm = filmService.update(film);
         log.info("Обновлен фильм {}", updatedFilm);
@@ -84,9 +83,8 @@ public class FilmController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void remove(@PathVariable long id) {
         log.info("Попытка удалить фильм с id={}", id);
-        Film deletedFilm = filmService.find(id);
 
         filmService.remove(id);
-        log.info("Удален фильм {}", deletedFilm);
+        log.info("Удален фильм c id={}", id);
     }
 }

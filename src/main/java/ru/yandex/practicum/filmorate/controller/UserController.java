@@ -53,7 +53,6 @@ public class UserController {
     @PutMapping
     private User update(@RequestBody @Validated({RestValidationGroups.Update.class, Default.class}) User user) {
         log.info("Попытка обновить пользователя {}", user);
-        userService.find(user.getId());
 
         User updatedUser = userService.update(user);
         log.info("Обновлен пользователь {}", updatedUser);
@@ -64,31 +63,26 @@ public class UserController {
     @PutMapping("/{id}/friends/{friendId}")
     private void addFriend(@PathVariable long id, @PathVariable long friendId) {
         log.info("Попытка подружить пользователей с id={} и id={}", id, friendId);
-        User user = userService.find(id);
-        User friend = userService.find(friendId);
 
-        userService.addFriend(user, friend);
-        log.info("Пользователи {} и {} подружились", user, friend);
+        userService.addFriend(id, friendId);
+        log.info("Пользователи с id={} и id={} подружились", id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void removeFriend(@PathVariable long id, @PathVariable long friendId) {
         log.info("Попытка удалить друг друга из друзей для пользователей с id={} и id={}", id, friendId);
-        User user = userService.find(id);
-        User friend = userService.find(friendId);
 
-        userService.removeFriend(user, friend);
-        log.info("Пользователи {} и {} больше не друзья", user, friend);
+        userService.removeFriend(id, friendId);
+        log.info("Пользователи id={} и id={} больше не друзья", id, friendId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void remove(@PathVariable long id) {
         log.info("Попытка удалить пользователя с id={}", id);
-        User deletedUser = userService.find(id);
 
         userService.remove(id);
-        log.info("Удален пользователь {}", deletedUser);
+        log.info("Удален пользователь c id={}", id);
     }
 }

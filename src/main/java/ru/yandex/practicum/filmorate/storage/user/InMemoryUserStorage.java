@@ -31,6 +31,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User updatedUser) {
+        find(updatedUser.getId());
         users.replace(updatedUser.getId(), updatedUser);
 
         return updatedUser;
@@ -38,6 +39,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void remove(Long id) {
+        find(id);
         users.remove(id);
     }
 

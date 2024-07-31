@@ -28,6 +28,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film update(Film newFilm) {
+        find(newFilm.getId());
+
         return filmStorage.update(newFilm);
     }
 
@@ -38,6 +40,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void remove(long id) {
+        find(id);
         filmStorage.remove(id);
     }
 

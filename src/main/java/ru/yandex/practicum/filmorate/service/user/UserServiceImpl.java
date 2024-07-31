@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User newUser) {
+        find(newUser.getId());
         newUser.setName(computeUserName(newUser));
 
         return userStorage.update(newUser);
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void remove(long id) {
+        find(id);
         userStorage.remove(id);
     }
 
@@ -47,15 +49,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addFriend(User user, User friend) {
-        user.getFriends().add(friend.getId());
-        friend.getFriends().add(user.getId());
+    public void addFriend(Long userId, Long friendId) {
+        Set<Long> userFriends = find(userId).getFriends();
+        Set<Long> anotherUserFriends = find(friendId).getFriends();
+
+        userFriends.add(friendId);
+        anotherUserFriends.add(userId);
     }
 
     @Override
-    public void removeFriend(User user, User friend) {
-        user.getFriends().remove(friend.getId());
-        friend.getFriends().remove(user.getId());
+    public void removeFriend(Long userId, Long friendId) {
+        Set<Long> userFriends = find(userId).getFriends();
+        Set<Long> anotherUserFriends = find(friendId).getFriends();
+
+        userFriends.remove(friendId);
+        anotherUserFriends.remove(userId);
     }
 
     @Override

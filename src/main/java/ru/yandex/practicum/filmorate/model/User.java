@@ -1,32 +1,28 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.validation.annotation.NoWhitespace;
 import ru.yandex.practicum.filmorate.validation.annotation.group.RestValidationGroups;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * User.
  */
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(of = { "id" })
 public class User {
-    private final Set<Long> friends = new HashSet<>();
-
     @NotNull(groups = RestValidationGroups.Update.class)
     private Long id;
 
-    @NotNull
     @Email
+    @NotNull
     @NotBlank
+    @Size(max = 255)
     private String email;
 
     @NotNull

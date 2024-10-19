@@ -2,15 +2,15 @@ package ru.yandex.practicum.filmorate.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import ru.yandex.practicum.filmorate.validation.annotation.NotBefore;
+import ru.yandex.practicum.filmorate.validation.annotation.DateNotBefore;
 
 import java.time.LocalDate;
 
-public class FilmReleaseDateValidator implements ConstraintValidator<NotBefore, LocalDate> {
+public class FilmReleaseDateValidator implements ConstraintValidator<DateNotBefore, LocalDate> {
     LocalDate releaseDateLowerBound;
 
     @Override
-    public void initialize(NotBefore constraintAnnotation) {
+    public void initialize(DateNotBefore constraintAnnotation) {
         this.releaseDateLowerBound = LocalDate.parse(constraintAnnotation.value());
     }
 

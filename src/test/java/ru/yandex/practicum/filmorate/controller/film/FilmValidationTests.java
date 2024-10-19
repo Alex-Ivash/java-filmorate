@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.unit.film;
+package ru.yandex.practicum.filmorate.controller.film;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -16,7 +16,7 @@ class FilmValidationTests {
     private static Validator validator;
 
     static Film getValidFilm() {
-        return new Film(1L, "name", "description", LocalDate.of(2005, 11, 1), 123);
+        return new Film(1L, null, "name", "description", LocalDate.of(2005, 11, 1), 123, null);
     }
 
     @BeforeAll

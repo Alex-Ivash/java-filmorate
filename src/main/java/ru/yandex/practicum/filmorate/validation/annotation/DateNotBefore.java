@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = FilmReleaseDateValidator.class)
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NotBefore {
+public @interface DateNotBefore {
     String value() default "1895-12-28";
 
     String message() default "Дата должна быть не ранее {value}";

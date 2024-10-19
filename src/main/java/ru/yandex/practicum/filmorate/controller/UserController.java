@@ -22,67 +22,88 @@ public class UserController {
 
     @GetMapping("/{id}")
     private User get(@PathVariable long id) {
-        return userService.find(id);
+        log.info("Поиск пользователя c id={}...", id);
+        User user = userService.find(id);
+        log.info("Пользователь c id={} найден.", id);
+
+        return user;
     }
 
     @GetMapping
     private List<User> getAll() {
-        return userService.getAll();
+        log.info("Формирование списка всех пользователей...");
+        List<User> allUsers = userService.getAll();
+        log.info("Список всех пользователей сформирован.");
+
+        return allUsers;
     }
 
     @GetMapping("/{id}/friends")
     private List<User> getFriends(@PathVariable long id) {
-        return userService.getAllFriends(id);
+        log.info("Формирование списка друзей пользователя с id={}...", id);
+        List<User> userFriends = userService.getAllFriends(id);
+        log.info("Список друзей пользователя с id={} сформирован.", id);
+
+        return userFriends;
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     private List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
-        return userService.getCommonFriends(id, otherId);
+        log.info("Формирование списка общих друзей пользователей с id={} и id={}...", id, otherId);
+        List<User> commonFriends = userService.getCommonFriends(id, otherId);
+        log.info("Список общих друзей пользователей с id={} и id={} сформирован.", id, otherId);
+
+        return commonFriends;
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private void addFriend(@PathVariable long id, @PathVariable long friendId) {
+        log.info("Создание дружбы между пользователями с id={} и id={}...", id, friendId);
+        userService.addFriend(id, friendId);
+        log.info("Дружба между пользователями с id={} и id={} создана.", id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+        log.info("Удаление дружбы между пользователями с id={} и id={}...", id, friendId);
+        userService.removeFriend(id, friendId);
+        log.info("Дружба между пользователями с id={} и id={} удалена.", id, friendId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     private User create(@RequestBody @Valid User user) {
-        log.info("Попытка создать нового пользователя {}", user);
+        log.info("Создание нового пользователя {}...", user);
         User createdUser = userService.create(user);
-        log.info("Создан новый пользователь {}", createdUser);
+        log.info("Создан новый пользователь {}.", createdUser);
 
         return createdUser;
     }
 
     @PutMapping
     private User update(@RequestBody @Validated({RestValidationGroups.Update.class, Default.class}) User user) {
-        log.info("Попытка обновить пользователя {}", user);
-
+        log.info("Обновление пользователя {}...", user);
         User updatedUser = userService.update(user);
-        log.info("Обновлен пользователь {}", updatedUser);
+        log.info("Обновлен пользователь {}.", updatedUser);
 
         return updatedUser;
-    }
-
-    @PutMapping("/{id}/friends/{friendId}")
-    private void addFriend(@PathVariable long id, @PathVariable long friendId) {
-        log.info("Попытка подружить пользователей с id={} и id={}", id, friendId);
-
-        userService.addFriend(id, friendId);
-        log.info("Пользователи с id={} и id={} подружились", id, friendId);
-    }
-
-    @DeleteMapping("/{id}/friends/{friendId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    private void removeFriend(@PathVariable long id, @PathVariable long friendId) {
-        log.info("Попытка удалить друг друга из друзей для пользователей с id={} и id={}", id, friendId);
-
-        userService.removeFriend(id, friendId);
-        log.info("Пользователи id={} и id={} больше не друзья", id, friendId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void remove(@PathVariable long id) {
-        log.info("Попытка удалить пользователя с id={}", id);
-
+        log.info("Удаление пользователя с id={}...", id);
         userService.remove(id);
-        log.info("Удален пользователь c id={}", id);
+        log.info("Удален пользователь c id={}.", id);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private void remove() {
+        log.info("Удаление всех пользователей...");
+        userService.removeAll();
+        log.info("Все пользователи удалены.");
     }
 }

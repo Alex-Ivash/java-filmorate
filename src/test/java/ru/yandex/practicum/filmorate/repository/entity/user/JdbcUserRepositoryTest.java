@@ -75,7 +75,7 @@ class JdbcUserRepositoryTest {
     void create_entityCreatedInDB() {
         //given
         User expectedEntity = getTestEntityWithNoEquivalentInDB();
-        expectedEntity.setId(4L);
+        expectedEntity.setId(5L);
 
         //when
         jdbcUserRepository.create(getTestEntityWithNoEquivalentInDB());

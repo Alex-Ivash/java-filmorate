@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.repository.JdbcBaseRepository;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,19 +14,14 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcFilmRepository implements FilmRepository {
+public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements FilmRepository {
     private final JdbcClient jdbcClient;
 
-    private static final String TABLE_NAME = "films";
-    private static final String CREATE_QUERY = """
+    private final String CREATE_QUERY = """
             INSERT INTO %s (name, description, release_date, duration, mpa)
             VALUES (:name, :description, :releaseDate, :duration, :mpa)
-            """.formatted(TABLE_NAME);
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM " + TABLE_NAME + " WHERE id=:id";
-    private static final String REMOVE_BY_ID_QUERY = "DELETE FROM " + TABLE_NAME + " WHERE id=:id";
-    private static final String REMOVE_ALL_QUERY = "DELETE FROM " + TABLE_NAME;
-    private static final String FIND_ALL_QUERY = "SELECT * FROM " + TABLE_NAME;
-    private static final String UPDATE_QUERY = """
+            """.formatted(getTableName());
+    private final String UPDATE_QUERY = """
             UPDATE %s SET
                name=:name,
                description=:description,
@@ -33,7 +29,7 @@ public class JdbcFilmRepository implements FilmRepository {
                duration=:duration,
                mpa=:mpa
             WHERE id=:id
-            """.formatted(TABLE_NAME);
+            """.formatted(getTableName());
 
     @Override
     public Film create(Film newEntity) {
@@ -108,5 +104,10 @@ public class JdbcFilmRepository implements FilmRepository {
     public void removeAll() {
         jdbcClient.sql(REMOVE_ALL_QUERY)
                 .update();
+    }
+
+    @Override
+    protected String getTableName() {
+        return "films";
     }
 }

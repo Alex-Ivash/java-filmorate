@@ -14,6 +14,7 @@ public class JdbcUsersFriendshipsRepository implements UsersFriendshipsRepositor
     private final JdbcClient jdbcClient;
 
     private static final String TABLE_NAME = "users_friendships";
+
     private static final String FIND_BY_ID_QUERY = "SELECT friend_id FROM " + TABLE_NAME + " WHERE user_id=:userId";
     private static final String FIND_ALL_QUERY = "SELECT * FROM " + TABLE_NAME;
     private static final String FIND_COMMON_FRIENDS_QUERY = """

@@ -17,11 +17,11 @@ import java.util.Optional;
 public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements FilmRepository {
     private final JdbcClient jdbcClient;
 
-    private final String CREATE_QUERY = """
+    private final String createQuery = """
             INSERT INTO %s (name, description, release_date, duration, mpa)
             VALUES (:name, :description, :releaseDate, :duration, :mpa)
             """.formatted(getTableName());
-    private final String UPDATE_QUERY = """
+    private final String updateQuery = """
             UPDATE %s SET
                name=:name,
                description=:description,
@@ -35,7 +35,7 @@ public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements Film
     public Film create(Film newEntity) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcClient.sql(CREATE_QUERY)
+        jdbcClient.sql(createQuery)
                 .param("name", newEntity.getName())
                 .param("description", newEntity.getDescription())
                 .param("releaseDate", newEntity.getReleaseDate())
@@ -50,7 +50,7 @@ public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements Film
 
     @Override
     public Film update(Film updatedEntity) {
-        jdbcClient.sql(UPDATE_QUERY)
+        jdbcClient.sql(updateQuery)
                 .param("id", updatedEntity.getId())
                 .param("name", updatedEntity.getName())
                 .param("description", updatedEntity.getDescription())
@@ -64,7 +64,7 @@ public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements Film
 
     @Override
     public Optional<Film> find(long id) {
-        return jdbcClient.sql(FIND_BY_ID_QUERY)
+        return jdbcClient.sql(findByIdQuery)
                 .param("id", id)
                 .query((rm, n) -> new Film(
                         rm.getLong("id"),
@@ -80,7 +80,7 @@ public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements Film
 
     @Override
     public List<Film> findAll() {
-        return jdbcClient.sql(FIND_ALL_QUERY)
+        return jdbcClient.sql(findAllQuery)
                 .query((rm, n) -> new Film(
                         rm.getLong("id"),
                         new LinkedHashSet<>(),
@@ -95,14 +95,14 @@ public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements Film
 
     @Override
     public void remove(long id) {
-        jdbcClient.sql(REMOVE_BY_ID_QUERY)
+        jdbcClient.sql(removeByIdQuery)
                 .param("id", id)
                 .update();
     }
 
     @Override
     public void removeAll() {
-        jdbcClient.sql(REMOVE_ALL_QUERY)
+        jdbcClient.sql(removeAllQuery)
                 .update();
     }
 

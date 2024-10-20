@@ -15,11 +15,11 @@ import java.util.Optional;
 public class JdbcUserRepository extends JdbcBaseRepository<User> implements UserRepository {
     private final JdbcClient jdbcClient;
 
-    private final String CREATE_QUERY = """
+    private final String createQuery = """
             INSERT INTO %s (email, login, name, birthday)
             VALUES (:email, :login, :name, :birthday)
             """.formatted(getTableName());
-    private final String UPDATE_QUERY = """
+    private final String updateQuery = """
             UPDATE %s SET
                email=:email,
                login=:login,
@@ -32,7 +32,7 @@ public class JdbcUserRepository extends JdbcBaseRepository<User> implements User
     public User create(User newEntity) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcClient.sql(CREATE_QUERY)
+        jdbcClient.sql(createQuery)
                 .paramSource(newEntity)
                 .update(keyHolder, "id");
 
@@ -43,7 +43,7 @@ public class JdbcUserRepository extends JdbcBaseRepository<User> implements User
 
     @Override
     public User update(User updatedEntity) {
-        jdbcClient.sql(UPDATE_QUERY)
+        jdbcClient.sql(updateQuery)
                 .paramSource(updatedEntity)
                 .update();
 
@@ -52,7 +52,7 @@ public class JdbcUserRepository extends JdbcBaseRepository<User> implements User
 
     @Override
     public Optional<User> find(long id) {
-        return jdbcClient.sql(FIND_BY_ID_QUERY)
+        return jdbcClient.sql(findByIdQuery)
                 .param("id", id)
                 .query(User.class)
                 .optional();
@@ -60,21 +60,21 @@ public class JdbcUserRepository extends JdbcBaseRepository<User> implements User
 
     @Override
     public List<User> findAll() {
-        return jdbcClient.sql(FIND_ALL_QUERY)
+        return jdbcClient.sql(findAllQuery)
                 .query(User.class)
                 .list();
     }
 
     @Override
     public void remove(long id) {
-        jdbcClient.sql(REMOVE_BY_ID_QUERY)
+        jdbcClient.sql(removeByIdQuery)
                 .param("id", id)
                 .update();
     }
 
     @Override
     public void removeAll() {
-        jdbcClient.sql(REMOVE_ALL_QUERY)
+        jdbcClient.sql(removeAllQuery)
                 .update();
     }
 

@@ -30,7 +30,7 @@ class JdbcFilmRepositoryTest {
                 "A thief who steals corporate secrets through the use of dream-sharing technology.",
                 LocalDate.of(2010, 7, 16),
                 148,
-                new Mpa(1L, null)
+                new Mpa(1L, "G")
         );
     }
 
@@ -42,7 +42,7 @@ class JdbcFilmRepositoryTest {
                 "A computer hacker learns from mysterious rebels about the true nature of his reality.",
                 LocalDate.of(1999, 3, 31),
                 136,
-                new Mpa(2L, null)
+                new Mpa(2L, "PG")
         );
     }
 
@@ -54,7 +54,7 @@ class JdbcFilmRepositoryTest {
                 "A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.",
                 LocalDate.of(2014, 11, 7),
                 148,
-                new Mpa(1L, null)
+                new Mpa(1L, "G")
         );
     }
 
@@ -66,7 +66,7 @@ class JdbcFilmRepositoryTest {
                 "bar",
                 LocalDate.of(2034, 11, 7),
                 148,
-                new Mpa(2L, null)
+                new Mpa(2L, "PG")
         );
     }
 

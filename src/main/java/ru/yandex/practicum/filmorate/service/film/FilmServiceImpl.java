@@ -53,9 +53,9 @@ public class FilmServiceImpl implements FilmService {
         Film film = checkFilmExistence(id);
         Set<Long> filmGenres = filmGenresRepository.find(id);
 
-        if (film.getMpa() != null) {
-            film.setMpa(checkMpaExistence(film.getMpa().getId()));
-        }
+//        if (film.getMpa() != null) {
+//            film.setMpa(checkMpaExistence(film.getMpa().getId()));
+//        }
 
         film.setGenres(getFilmGenresIfExistingInRepo(filmGenres));
 
@@ -88,15 +88,11 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getAll() {
-        Map<Long, Mpa> allMpasMap = getAllMpas();
         Map<Long, Genre> allGenresMap = getAllGenres();
         Map<Long, Set<Genre>> allFilmGenresMap = getAllFilmGenres(allGenresMap);
 
         return filmRepository.findAll().stream()
-                .peek(film -> {
-                    film.getGenres().addAll(allFilmGenresMap.getOrDefault(film.getId(), Set.of()));
-                    film.setMpa(allMpasMap.getOrDefault(film.getMpa().getId(), null));
-                })
+                .peek(film -> film.getGenres().addAll(allFilmGenresMap.getOrDefault(film.getId(), Set.of())))
                 .toList();
     }
 

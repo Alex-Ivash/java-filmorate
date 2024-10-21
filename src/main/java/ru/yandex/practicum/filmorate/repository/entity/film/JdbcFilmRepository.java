@@ -17,6 +17,17 @@ import java.util.Optional;
 public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements FilmRepository {
     private final JdbcClient jdbcClient;
 
+    protected final String findByIdQuery = """
+            SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa, m.name AS mpa_name
+            FROM %s AS f
+            JOIN %s AS m ON f.mpa = m.id
+            WHERE f.id=:id;
+            """.formatted(getTableName(), getMpaTableName());
+    protected final String findAllQuery = """
+            SELECT f.id, f.name, f.description, f.release_date, f.duration, f.mpa, m.name AS mpa_name
+            FROM %s AS f
+            JOIN %s AS m ON f.mpa = m.id;
+            """.formatted(getTableName(), getMpaTableName());
     private final String createQuery = """
             INSERT INTO %s (name, description, release_date, duration, mpa)
             VALUES (:name, :description, :releaseDate, :duration, :mpa)
@@ -73,7 +84,7 @@ public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements Film
                         rm.getString("description"),
                         rm.getDate("release_date").toLocalDate(),
                         rm.getInt("duration"),
-                        new Mpa(rm.getLong("mpa"), null)
+                        new Mpa(rm.getLong("mpa"), rm.getString("mpa_name"))
                 ))
                 .optional();
     }
@@ -88,7 +99,7 @@ public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements Film
                         rm.getString("description"),
                         rm.getDate("release_date").toLocalDate(),
                         rm.getInt("duration"),
-                        new Mpa(rm.getLong("mpa"), null)
+                        new Mpa(rm.getLong("mpa"), rm.getString("mpa_name"))
                 ))
                 .list();
     }
@@ -109,5 +120,9 @@ public class JdbcFilmRepository extends JdbcBaseRepository<Film> implements Film
     @Override
     protected String getTableName() {
         return "films";
+    }
+
+    protected String getMpaTableName() {
+        return "mpa";
     }
 }

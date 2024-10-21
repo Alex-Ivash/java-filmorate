@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.unit.user;
+package ru.yandex.practicum.filmorate.controller.user;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
